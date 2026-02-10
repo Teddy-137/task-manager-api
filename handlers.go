@@ -4,6 +4,7 @@ import (
 	"net/http"
 
 	"github.com/gin-gonic/gin"
+	"github.com/teddy-137/task_manager_api/models"
 )
 
 func Start() {
@@ -22,11 +23,11 @@ func Start() {
 func tasksHandler(ctx *gin.Context) {
 	switch ctx.Request.Method {
 	case http.MethodGet:
-		var tasks []Task
+		var tasks []models.Task
 		db.Find(&tasks)
 		ctx.JSON(http.StatusOK, tasks)
 	case http.MethodPost:
-		var input Task
+		var input models.Task
 		if err := ctx.ShouldBindJSON(&input); err != nil {
 			ctx.JSON(http.StatusBadRequest, gin.H{"message": "invalid input"})
 			return
@@ -43,7 +44,7 @@ func tasksHandler(ctx *gin.Context) {
 
 func taskHundler(ctx *gin.Context) {
 	id := ctx.Param("id")
-	var task Task
+	var task models.Task
 
 	if err := db.First(&task, id).Error; err != nil {
 		ctx.JSON(http.StatusNotFound, err.Error())
@@ -54,7 +55,7 @@ func taskHundler(ctx *gin.Context) {
 	case http.MethodGet:
 		ctx.JSON(http.StatusOK, task)
 	case http.MethodPut:
-		var input Task
+		var input models.Task
 
 		if err := ctx.ShouldBindJSON(&input); err != nil {
 			ctx.JSON(http.StatusBadRequest, err.Error())

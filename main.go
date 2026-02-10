@@ -3,6 +3,7 @@ package main
 import (
 	"log"
 
+	"github.com/teddy-137/task_manager_api/models"
 	"gorm.io/driver/sqlite"
 	"gorm.io/gorm"
 )
@@ -17,7 +18,7 @@ func main() {
 		log.Fatal("failed to connect database")
 	}
 
-	db.AutoMigrate(&Task{})
+	db.AutoMigrate(&models.Task{})
 
 	Start()
 }
