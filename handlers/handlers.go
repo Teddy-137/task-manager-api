@@ -7,15 +7,22 @@ import (
 )
 
 func Start() {
-	router := gin.Default()
+	router := gin.New()
 
-	router.GET("/tasks", tasksHandler)
-	router.POST("/tasks", tasksHandler)
+	router.Use(logRequest, jsonRecovery)
 
-	router.GET("/tasks/:id", taskHandler)
-	router.PUT("/tasks/:id", taskHandler)
-	router.DELETE("/tasks/:id", taskHandler)
-
+	v1 := router.Group("/api/v1/tasks")
+	{
+		v1.GET("/", tasksHandler)
+		v1.POST("/", tasksHandler)
+	}
+	autorized := router.Group("/api/v1/tasks")
+	autorized.Use(authMiddleware)
+	{
+		autorized.GET("/:id", taskHandler)
+		autorized.PUT("/:id", taskHandler)
+		autorized.DELETE("/:id", taskHandler)
+	}
 	router.Run()
 }
 
