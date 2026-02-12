@@ -25,6 +25,12 @@ func (r *userRepository) GetByID(id uint) (domain.User, error) {
 	return user, err
 }
 
+func (r *userRepository) GetByUsername(username string) (domain.User, error) {
+	var user domain.User
+	err := r.db.Where("username=?", username).First(&user).Error
+	return user, err
+}
+
 func (r *userRepository) Store(user *domain.User) error {
 	err := r.db.Create(&user).Error
 	return err

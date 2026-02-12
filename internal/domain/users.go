@@ -14,10 +14,12 @@ type User struct {
 type UserRepository interface {
 	Fetch() ([]User, error)
 	GetByID(id uint) (User, error)
+	GetByUsername(username string) (User, error)
 	Store(user *User) error
 }
 
 type UserService interface {
 	GetAllUsers() ([]User, error)
 	CreateUser(user *User) error
+	Login(username, password string) (string, error)
 }

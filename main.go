@@ -4,6 +4,7 @@ import (
 	"log"
 
 	"github.com/gin-gonic/gin"
+	"github.com/joho/godotenv"
 	"github.com/teddy-137/task_manager_api/internal/delivery"
 	"github.com/teddy-137/task_manager_api/internal/domain"
 	"github.com/teddy-137/task_manager_api/internal/repository"
@@ -11,6 +12,13 @@ import (
 	"gorm.io/driver/sqlite"
 	"gorm.io/gorm"
 )
+
+func init() {
+	err := godotenv.Load()
+	if err != nil {
+		log.Fatal("Error loading .env file")
+	}
+}
 
 func main() {
 	db, err := gorm.Open(sqlite.Open("app.db"), &gorm.Config{})

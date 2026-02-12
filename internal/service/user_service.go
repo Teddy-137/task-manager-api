@@ -4,6 +4,8 @@ import (
 	"errors"
 
 	"github.com/teddy-137/task_manager_api/internal/domain"
+	"github.com/teddy-137/task_manager_api/pkg/utils"
+	"golang.org/x/crypto/bcrypt"
 )
 
 type userService struct {
@@ -24,5 +26,25 @@ func (s *userService) CreateUser(user *domain.User) error {
 	if user.Username == "" {
 		return errors.New("invalid username")
 	}
+	hash, err := bcrypt.GenerateFromPassword([]byte(user.Password), bcrypt.DefaultCost)
+	if err != nil {
+		return err
+	}
+
+	user.Password = string(hash)
 	return s.userRepo.Store(user)
+}
+
+func (s *userService) Login(username, password string) (string, error) {
+	user, err := s.userRepo.GetByUsername(username)
+	if err != nil {
+		return "", errors.New("invalid credentials")
+	}
+
+	err = bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(password))
+	if err != nil {
+		return "", errors.New("invalid credentials")
+	}
+
+	return utils.GenerateToken(user.ID)
 }
