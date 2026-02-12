@@ -1,0 +1,31 @@
+package repository
+
+import (
+	"github.com/teddy-137/task_manager_api/internal/domain"
+	"gorm.io/gorm"
+)
+
+type userRepository struct {
+	db *gorm.DB
+}
+
+func NewUserRepository(db *gorm.DB) domain.UserRepository {
+	return &userRepository{db: db}
+}
+
+func (r *userRepository) Fetch() ([]domain.User, error) {
+	var users []domain.User
+	err := r.db.Find(&users).Error
+	return users, err
+}
+
+func (r *userRepository) GetByID(id uint) (domain.User, error) {
+	var user domain.User
+	err := r.db.First(&user, id).Error
+	return user, err
+}
+
+func (r *userRepository) Store(user *domain.User) error {
+	err := r.db.Create(&user).Error
+	return err
+}
