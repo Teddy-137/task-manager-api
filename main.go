@@ -13,14 +13,12 @@ import (
 	"gorm.io/gorm"
 )
 
-func init() {
+func main() {
 	err := godotenv.Load()
 	if err != nil {
 		log.Fatal("Error loading .env file")
 	}
-}
 
-func main() {
 	db, err := gorm.Open(sqlite.Open("app.db"), &gorm.Config{})
 	if err != nil {
 		log.Fatal("failed to connect database.")

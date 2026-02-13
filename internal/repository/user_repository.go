@@ -27,11 +27,30 @@ func (r *userRepository) GetByID(id uint) (domain.User, error) {
 
 func (r *userRepository) GetByUsername(username string) (domain.User, error) {
 	var user domain.User
-	err := r.db.Where("username=?", username).First(&user).Error
+	err := r.db.Where("username = ?", username).First(&user).Error
 	return user, err
 }
 
 func (r *userRepository) Store(user *domain.User) error {
-	err := r.db.Create(&user).Error
+	err := r.db.Create(user).Error
+	return err
+}
+
+func (r *userRepository) Update(id uint, user *domain.User) (error) {
+	var existingUser domain.User
+	err := r.db.First(&existingUser, id).Error
+	if err != nil {
+		return err
+	}
+
+	existingUser.Username = user.Username
+	existingUser.Password = user.Password
+
+	err = r.db.Save(&existingUser).Error
+	return err
+}
+
+func (r *userRepository) Delete(id uint) error {
+	err := r.db.Delete(&domain.User{}, id).Error
 	return err
 }

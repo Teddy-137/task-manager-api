@@ -48,3 +48,20 @@ func (s *userService) Login(username, password string) (string, error) {
 
 	return utils.GenerateToken(user.ID)
 }
+
+func (s *userService) UpdateUser(id uint, user *domain.User) error {
+	if user.Username == "" {
+		return errors.New("invalid username")
+	}
+	hash, err := bcrypt.GenerateFromPassword([]byte(user.Password), bcrypt.DefaultCost)
+	if err != nil {
+		return err
+	}
+
+	user.Password = string(hash)
+	return s.userRepo.Update(id, user)
+}
+
+func (s *userService) DeleteUser(id uint) error {
+	return s.userRepo.Delete(id)
+}

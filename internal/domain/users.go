@@ -16,10 +16,14 @@ type UserRepository interface {
 	GetByID(id uint) (User, error)
 	GetByUsername(username string) (User, error)
 	Store(user *User) error
+	Update(id uint, user *User) error
+	Delete(id uint) error
 }
 
 type UserService interface {
 	GetAllUsers() ([]User, error)
 	CreateUser(user *User) error
 	Login(username, password string) (string, error)
+	UpdateUser(id uint, user *User) error
+	DeleteUser(id uint) error
 }
